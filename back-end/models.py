@@ -8,4 +8,3 @@ class Task(db.Model):
     estado_actual = db.Column(db.String(100), nullable=False)
     archivo = db.Column(db.String(200), nullable=True)
 
-db.create_all()

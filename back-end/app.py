@@ -1,3 +1,4 @@
+# app.py
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -17,3 +18,7 @@ CORS(app)
 
 # Importar las rutas después de inicializar la aplicación
 import routes
+
+# Crear todas las tablas
+with app.app_context():
+    db.create_all()
