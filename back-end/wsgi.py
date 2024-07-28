@@ -1,8 +1,8 @@
-import os
 import sys
+import os
 
-print(f"Current working directory: {os.getcwd()}")
-print(f"Python path: {sys.path}")
+# Añadir el directorio 'back-end' al PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'back-end')))
 
 from app import app
 
