@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -7,8 +8,10 @@ function App() {
     tarea: '',
     responsable: '',
     accion_recomendada: '',
-    estado_actual: '',
-    archivo: null
+    estado_actual: 'Pendiente',
+    prioridad: 'Media',
+    archivo: null,
+    observacion: ''
   });
 
   const backendUrl = 'https://task-manager-2avl.onrender.com';
@@ -36,6 +39,7 @@ function App() {
     formData.append('responsable', newTask.responsable);
     formData.append('accion_recomendada', newTask.accion_recomendada);
     formData.append('estado_actual', newTask.estado_actual);
+    formData.append('prioridad', newTask.prioridad);
     if (newTask.archivo) {
       formData.append('archivo', newTask.archivo);
     }
@@ -55,9 +59,12 @@ function App() {
           tarea: '',
           responsable: '',
           accion_recomendada: '',
-          estado_actual: '',
-          archivo: null
+          estado_actual: 'Pendiente',
+          prioridad: 'Media',
+          archivo: null,
+          observacion: ''
         });
+        window.location.reload();
       })
       .catch(error => console.error('Error adding task:', error));
   };
@@ -71,6 +78,29 @@ function App() {
       .catch(error => console.error('Error deleting task:', error));
   };
 
+  const handleUpdate = (id, updatedTask) => {
+    const formData = new FormData();
+    formData.append('tarea', updatedTask.tarea);
+    formData.append('responsable', updatedTask.responsable);
+    formData.append('accion_recomendada', updatedTask.accion_recomendada);
+    formData.append('estado_actual', updatedTask.estado_actual);
+    formData.append('prioridad', updatedTask.prioridad);
+    formData.append('observacion', updatedTask.observacion);
+    if (updatedTask.archivo) {
+      formData.append('archivo', updatedTask.archivo);
+    }
+
+    axios.put(`${backendUrl}/tasks/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+      .then(response => {
+        setTasks(tasks.map(task => task.id === id ? { ...task, ...updatedTask } : task));
+      })
+      .catch(error => console.error('Error updating task:', error));
+  };
+
   return (
     <div className="App">
       <h1>Task Manager</h1>
@@ -78,20 +108,54 @@ function App() {
         <input type="text" name="tarea" placeholder="Tarea" value={newTask.tarea} onChange={handleChange} />
         <input type="text" name="responsable" placeholder="Responsable" value={newTask.responsable} onChange={handleChange} />
         <input type="text" name="accion_recomendada" placeholder="Acción Recomendada" value={newTask.accion_recomendada} onChange={handleChange} />
-        <input type="text" name="estado_actual" placeholder="Estado Actual" value={newTask.estado_actual} onChange={handleChange} />
-        <input type="file" name="archivo" placeholder="Archivo" onChange={handleChange} />
+        <select name="estado_actual" value={newTask.estado_actual} onChange={handleChange}>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Completado">Completado</option>
+          <option value="Descartado">Descartado</option>
+        </select>
+        <select name="prioridad" value={newTask.prioridad} onChange={handleChange}>
+          <option value="Alta">Alta</option>
+          <option value="Media">Media</option>
+          <option value="Baja">Baja</option>
+        </select>
+        <input type="file" name="archivo" onChange={handleChange} />
         <button type="submit">Agregar Tarea</button>
       </form>
       <ul>
         {tasks.map(task => (
           <li key={task.id}>
-            {task.tarea} - {task.responsable} - {task.accion_recomendada} - {task.estado_actual}
-            {task.archivo && (
-              <a href={`${backendUrl}/uploads/${task.archivo}`} download>
-                Descargar archivo
-              </a>
-            )}
-            <button onClick={() => handleDelete(task.id)}>Eliminar</button>
+            <div>
+              <strong>Tarea:</strong> {task.tarea}<br />
+              <strong>Responsable:</strong> {task.responsable}<br />
+              <strong>Acción Recomendada:</strong> {task.accion_recomendada}<br />
+              <strong>Estado:</strong> {task.estado_actual}<br />
+              <strong>Prioridad:</strong> {task.prioridad}<br />
+              {task.archivo && (
+                <a href={`${backendUrl}/uploads/${task.archivo}`} download>
+                  Descargar archivo
+                </a>
+              )}
+              <br />
+              <button onClick={() => handleDelete(task.id)}>Eliminar</button>
+            </div>
+            <div>
+              <h3>Actualizar Tarea</h3>
+              <input type="text" name="tarea" placeholder="Tarea" value={task.tarea} onChange={(e) => handleUpdate(task.id, { ...task, tarea: e.target.value })} />
+              <input type="text" name="responsable" placeholder="Responsable" value={task.responsable} onChange={(e) => handleUpdate(task.id, { ...task, responsable: e.target.value })} />
+              <input type="text" name="accion_recomendada" placeholder="Acción Recomendada" value={task.accion_recomendada} onChange={(e) => handleUpdate(task.id, { ...task, accion_recomendada: e.target.value })} />
+              <select name="estado_actual" value={task.estado_actual} onChange={(e) => handleUpdate(task.id, { ...task, estado_actual: e.target.value })}>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Completado">Completado</option>
+                <option value="Descartado">Descartado</option>
+              </select>
+              <select name="prioridad" value={task.prioridad} onChange={(e) => handleUpdate(task.id, { ...task, prioridad: e.target.value })}>
+                <option value="Alta">Alta</option>
+                <option value="Media">Media</option>
+                <option value="Baja">Baja</option>
+              </select>
+              <textarea name="observacion" placeholder="Observación" value={task.observacion} onChange={(e) => handleUpdate(task.id, { ...task, observacion: e.target.value })}></textarea>
+              <input type="file" name="archivo" onChange={(e) => handleUpdate(task.id, { ...task, archivo: e.target.files[0] })} />
+            </div>
           </li>
         ))}
       </ul>
