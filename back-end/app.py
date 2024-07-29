@@ -14,7 +14,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Desactivar la notificaci
 db = SQLAlchemy(app)
 
 # Habilitar CORS
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Importar las rutas después de inicializar la aplicación
 import routes
