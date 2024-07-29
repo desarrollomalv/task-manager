@@ -86,6 +86,11 @@ function App() {
         {tasks.map(task => (
           <li key={task.id}>
             {task.tarea} - {task.responsable} - {task.accion_recomendada} - {task.estado_actual}
+            {task.archivo && (
+              <a href={`${backendUrl}/uploads/${task.archivo}`} download>
+                Descargar archivo
+              </a>
+            )}
             <button onClick={() => handleDelete(task.id)}>Eliminar</button>
           </li>
         ))}
