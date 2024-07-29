@@ -20,4 +20,4 @@ with app.app_context():
 
 @app.route('/')
 def hello():
-    return "Si estas viendo esto, app.py se está ejecutando!"
+    return "Si estas viendo esto, app.py se está ejecutando CON LA CONFIGURACION NUEVA!"
