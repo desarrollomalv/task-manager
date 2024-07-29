@@ -22,3 +22,7 @@ import routes
 # Crear todas las tablas
 with app.app_context():
     db.create_all()
+
+@app.route('/')
+def hello():
+    return "Si estas viendo esto, app.py se esta ejecutando!"
