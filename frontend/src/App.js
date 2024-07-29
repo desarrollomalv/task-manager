@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -9,7 +8,7 @@ function App() {
     responsable: '',
     accion_recomendada: '',
     estado_actual: '',
-    archivo: ''
+    archivo: null
   });
 
   const backendUrl = 'https://task-manager-2avl.onrender.com';
@@ -18,47 +17,97 @@ function App() {
     axios.get(`${backendUrl}/tasks`)
       .then(response => {
         setTasks(response.data);
-      });
+      })
+      .catch(error => console.error('Error fetching tasks:', error));
   }, []);
 
   const handleChange = (e) => {
-    setNewTask({
-      ...newTask,
-      [e.target.name]: e.target.value
-    });
+    if (e.target.name === 'archivo') {
+      setNewTask({
+        ...newTask,
+        archivo: e.target.files[0]
+      });
+    } else {
+      setNewTask({
+        ...newTask,
+        [e.target.name]: e.target.value
+      });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${backendUrl}/tasks`, newTask)
+    const formData = new FormData();
+    formData.append('tarea', newTask.tarea);
+    formData.append('responsable', newTask.responsable);
+    formData.append('accion_recomendada', newTask.accion_recomendada);
+    formData.append('estado_actual', newTask.estado_actual);
+    if (newTask.archivo) {
+      formData.append('archivo', newTask.archivo);
+    }
+
+    axios.post(`${backendUrl}/tasks`, formData)
       .then(response => {
-        setTasks([...tasks, newTask]);
+        setTasks([...tasks, {
+          ...newTask,
+          id: Date.now() // Asignar un ID temporal hasta que se obtenga del backend
+        }]);
         setNewTask({
           tarea: '',
           responsable: '',
           accion_recomendada: '',
           estado_actual: '',
-          archivo: ''
+          archivo: null
         });
-      });
+      })
+      .catch(error => console.error('Error adding task:', error));
   };
 
   const handleDelete = (id) => {
     axios.delete(`${backendUrl}/tasks/${id}`)
       .then(response => {
         setTasks(tasks.filter(task => task.id !== id));
-      });
+      })
+      .catch(error => console.error('Error deleting task:', error));
   };
 
   return (
     <div className="App">
       <h1>Task Manager</h1>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="tarea" placeholder="Tarea" value={newTask.tarea} onChange={handleChange} />
-        <input type="text" name="responsable" placeholder="Responsable" value={newTask.responsable} onChange={handleChange} />
-        <input type="text" name="accion_recomendada" placeholder="Acción Recomendada" value={newTask.accion_recomendada} onChange={handleChange} />
-        <input type="text" name="estado_actual" placeholder="Estado Actual" value={newTask.estado_actual} onChange={handleChange} />
-        <input type="file" name="archivo" placeholder="Archivo" onChange={handleChange} />
+        <input
+          type="text"
+          name="tarea"
+          placeholder="Tarea"
+          value={newTask.tarea}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="responsable"
+          placeholder="Responsable"
+          value={newTask.responsable}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="accion_recomendada"
+          placeholder="Acción Recomendada"
+          value={newTask.accion_recomendada}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="estado_actual"
+          placeholder="Estado Actual"
+          value={newTask.estado_actual}
+          onChange={handleChange}
+        />
+        <input
+          type="file"
+          name="archivo"
+          onChange={handleChange}
+        />
         <button type="submit">Agregar Tarea</button>
       </form>
       <ul>

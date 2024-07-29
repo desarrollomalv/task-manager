@@ -1,22 +1,32 @@
 # routes.py
 
-from flask import request, jsonify
+import os
+from flask import jsonify, request
 from app import app, db
 from models import Task
 
 @app.route('/tasks', methods=['GET', 'POST'])
 def manage_tasks():
     if request.method == 'POST':
-        data = request.get_json()
+        tarea = request.form.get('tarea')
+        responsable = request.form.get('responsable')
+        accion_recomendada = request.form.get('accion_recomendada')
+        estado_actual = request.form.get('estado_actual')
+        archivo = request.files.get('archivo')
+
         new_task = Task(
-            tarea=data['tarea'],
-            responsable=data['responsable'],
-            accion_recomendada=data['accion_recomendada'],
-            estado_actual=data['estado_actual'],
-            archivo=data.get('archivo', '')
+            tarea=tarea,
+            responsable=responsable,
+            accion_recomendada=accion_recomendada,
+            estado_actual=estado_actual,
+            archivo=archivo.filename if archivo else ''
         )
         db.session.add(new_task)
         db.session.commit()
+
+        if archivo:
+            archivo.save(os.path.join(app.config['UPLOAD_FOLDER'], archivo.filename))
+
         return jsonify({"message": "Task created"}), 201
 
     tasks = Task.query.all()

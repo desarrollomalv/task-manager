@@ -1,28 +1,23 @@
-# app.py
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import os
 
-# Crear una instancia de la aplicación Flask
 app = Flask(__name__)
 
-# Configurar la base de datos
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Desactivar la notificación de modificaciones de la base de datos
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = 'uploads'  # Carpeta para archivos subidos
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Tamaño máximo de archivo en 16 MB
 
-# Inicializar SQLAlchemy
 db = SQLAlchemy(app)
+CORS(app)
 
-# Habilitar CORS
-CORS(app, resources={r"/*": {"origins": "*"}})
-
-# Importar las rutas después de inicializar la aplicación
 import routes
 
-# Crear todas las tablas
 with app.app_context():
     db.create_all()
 
 @app.route('/')
 def hello():
-    return "Si estas viendo esto, app.py se esta ejecutando!"
+    return "Si estas viendo esto, app.py se está ejecutando!"
