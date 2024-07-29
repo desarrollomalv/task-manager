@@ -11,7 +11,7 @@ const TaskManager = () => {
   }, []);
 
   const fetchTasks = async () => {
-    const response = await axios.get('URL_DE_TU_BACKEND/tareas');
+    const response = await axios.get('https://task-manager-2avl.onrender.com/tareas');
     setTasks(response.data);
   };
 
@@ -32,12 +32,12 @@ const TaskManager = () => {
     formData.append('estado', newTask.estado);
     formData.append('archivo', newTask.archivo);
 
-    await axios.post('URL_DE_TU_BACKEND/tareas', formData);
+    await axios.post('https://task-manager-2avl.onrender.com', formData);
     fetchTasks();
   };
 
   const handleDeleteTask = async (id) => {
-    await axios.delete(`URL_DE_TU_BACKEND/tareas/${id}`);
+    await axios.delete(`https://task-manager-2avl.onrender.com/tareas/${id}`);
     fetchTasks();
   };
 
