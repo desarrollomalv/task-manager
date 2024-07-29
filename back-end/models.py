@@ -9,4 +9,3 @@ class Task(db.Model):
     accion_recomendada = db.Column(db.String(200), nullable=False)
     estado_actual = db.Column(db.String(100), nullable=False)
     archivo = db.Column(db.String(200), nullable=True)
-

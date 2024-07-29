@@ -22,17 +22,11 @@ function App() {
   }, []);
 
   const handleChange = (e) => {
-    if (e.target.name === 'archivo') {
-      setNewTask({
-        ...newTask,
-        archivo: e.target.files[0]
-      });
-    } else {
-      setNewTask({
-        ...newTask,
-        [e.target.name]: e.target.value
-      });
-    }
+    const { name, value, files } = e.target;
+    setNewTask({
+      ...newTask,
+      [name]: files ? files[0] : value
+    });
   };
 
   const handleSubmit = (e) => {
@@ -46,12 +40,17 @@ function App() {
       formData.append('archivo', newTask.archivo);
     }
 
-    axios.post(`${backendUrl}/tasks`, formData)
+    axios.post(`${backendUrl}/tasks`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
       .then(response => {
-        setTasks([...tasks, {
+        const newTaskWithId = {
           ...newTask,
-          id: Date.now() // Asignar un ID temporal hasta que se obtenga del backend
-        }]);
+          id: response.data.id
+        };
+        setTasks([...tasks, newTaskWithId]);
         setNewTask({
           tarea: '',
           responsable: '',
@@ -64,6 +63,7 @@ function App() {
   };
 
   const handleDelete = (id) => {
+    console.log('Deleting task with ID:', id);
     axios.delete(`${backendUrl}/tasks/${id}`)
       .then(response => {
         setTasks(tasks.filter(task => task.id !== id));
@@ -75,39 +75,11 @@ function App() {
     <div className="App">
       <h1>Task Manager</h1>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="tarea"
-          placeholder="Tarea"
-          value={newTask.tarea}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="responsable"
-          placeholder="Responsable"
-          value={newTask.responsable}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="accion_recomendada"
-          placeholder="Acción Recomendada"
-          value={newTask.accion_recomendada}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="estado_actual"
-          placeholder="Estado Actual"
-          value={newTask.estado_actual}
-          onChange={handleChange}
-        />
-        <input
-          type="file"
-          name="archivo"
-          onChange={handleChange}
-        />
+        <input type="text" name="tarea" placeholder="Tarea" value={newTask.tarea} onChange={handleChange} />
+        <input type="text" name="responsable" placeholder="Responsable" value={newTask.responsable} onChange={handleChange} />
+        <input type="text" name="accion_recomendada" placeholder="Acción Recomendada" value={newTask.accion_recomendada} onChange={handleChange} />
+        <input type="text" name="estado_actual" placeholder="Estado Actual" value={newTask.estado_actual} onChange={handleChange} />
+        <input type="file" name="archivo" placeholder="Archivo" onChange={handleChange} />
         <button type="submit">Agregar Tarea</button>
       </form>
       <ul>
