@@ -8,8 +8,8 @@ function App() {
     tarea: '',
     responsable: '',
     accion_recomendada: '',
-    estado_actual: '',
-    prioridad: '',  // Nuevo campo
+    estado_actual: 'Pendiente',  // Valor por defecto
+    prioridad: '',  
     archivo: null
   });
 
@@ -38,7 +38,7 @@ function App() {
     formData.append('responsable', newTask.responsable);
     formData.append('accion_recomendada', newTask.accion_recomendada);
     formData.append('estado_actual', newTask.estado_actual);
-    formData.append('prioridad', newTask.prioridad);  // Nuevo campo
+    formData.append('prioridad', newTask.prioridad);  
     if (newTask.archivo) {
       formData.append('archivo', newTask.archivo);
     }
@@ -58,8 +58,8 @@ function App() {
           tarea: '',
           responsable: '',
           accion_recomendada: '',
-          estado_actual: '',
-          prioridad: '',  // Reiniciar el campo
+          estado_actual: 'Pendiente',  // Reiniciar el campo
+          prioridad: '',  
           archivo: null
         });
       })
@@ -79,17 +79,53 @@ function App() {
     <div className="App">
       <h1>Task Manager</h1>
       <form onSubmit={handleSubmit}>
-        <input type="text" name="tarea" placeholder="Tarea" value={newTask.tarea} onChange={handleChange} />
-        <input type="text" name="responsable" placeholder="Responsable" value={newTask.responsable} onChange={handleChange} />
-        <input type="text" name="accion_recomendada" placeholder="Acción Recomendada" value={newTask.accion_recomendada} onChange={handleChange} />
-        <input type="text" name="estado_actual" placeholder="Estado Actual" value={newTask.estado_actual} onChange={handleChange} />
-        <select name="prioridad" value={newTask.prioridad} onChange={handleChange} required>
+        <input 
+          type="text" 
+          name="tarea" 
+          placeholder="Tarea" 
+          value={newTask.tarea} 
+          onChange={handleChange} 
+        />
+        <input 
+          type="text" 
+          name="responsable" 
+          placeholder="Responsable" 
+          value={newTask.responsable} 
+          onChange={handleChange} 
+        />
+        <input 
+          type="text" 
+          name="accion_recomendada" 
+          placeholder="Acción Recomendada" 
+          value={newTask.accion_recomendada} 
+          onChange={handleChange} 
+        />
+        <select 
+          name="estado_actual" 
+          value={newTask.estado_actual} 
+          onChange={handleChange}
+        >
+          <option value="Pendiente">Pendiente</option>
+          <option value="Completado">Completado</option>
+          <option value="Descartado">Descartado</option>
+        </select>
+        <select 
+          name="prioridad" 
+          value={newTask.prioridad} 
+          onChange={handleChange} 
+          required
+        >
           <option value="">Selecciona Prioridad</option>
           <option value="Alta">Alta</option>
           <option value="Media">Media</option>
           <option value="Baja">Baja</option>
         </select>
-        <input type="file" name="archivo" placeholder="Archivo" onChange={handleChange} />
+        <input 
+          type="file" 
+          name="archivo" 
+          placeholder="Archivo" 
+          onChange={handleChange} 
+        />
         <button type="submit">Agregar Tarea</button>
       </form>
       <div className="task-grid">
@@ -99,7 +135,7 @@ function App() {
             <p><strong>Responsable:</strong> {task.responsable}</p>
             <p><strong>Acción Recomendada:</strong> {task.accion_recomendada}</p>
             <p><strong>Estado Actual:</strong> {task.estado_actual}</p>
-            <p><strong>Prioridad:</strong> {task.prioridad}</p>  {/* Mostrar prioridad */}
+            <p><strong>Prioridad:</strong> {task.prioridad}</p>  
             {task.archivo && (
               <p><a href={`${backendUrl}/uploads/${task.archivo}`} download>Descargar archivo</a></p>
             )}

@@ -1,4 +1,4 @@
-from flask import request, jsonify, send_from_directory, send_file
+from flask import request, jsonify, send_file
 from app import app, db
 from models import Task
 import os
@@ -20,6 +20,7 @@ def manage_tasks():
             responsable=data['responsable'],
             accion_recomendada=data['accion_recomendada'],
             estado_actual=data['estado_actual'],
+            prioridad=data['prioridad'],  # Agregado
             archivo=archivo_nombre
         )
         db.session.add(new_task)
@@ -33,6 +34,7 @@ def manage_tasks():
         'responsable': task.responsable,
         'accion_recomendada': task.accion_recomendada,
         'estado_actual': task.estado_actual,
+        'prioridad': task.prioridad,  # Agregado
         'archivo': task.archivo
     } for task in tasks])
 
@@ -48,6 +50,39 @@ def delete_task(id):
         db.session.commit()
         return jsonify({"message": "Task deleted"}), 200
     return jsonify({"message": "Task not found"}), 404
+
+@app.route('/tasks/<int:id>', methods=['PUT'])
+def update_task(id):
+    task = Task.query.get(id)
+    if not task:
+        return jsonify({"message": "Task not found"}), 404
+    
+    data = request.form
+    archivo = request.files.get('archivo')
+    
+    if 'tarea' in data:
+        task.tarea = data['tarea']
+    if 'responsable' in data:
+        task.responsable = data['responsable']
+    if 'accion_recomendada' in data:
+        task.accion_recomendada = data['accion_recomendada']
+    if 'estado_actual' in data:
+        task.estado_actual = data['estado_actual']
+    if 'prioridad' in data:
+        task.prioridad = data['prioridad']
+    if archivo:
+        # Eliminar archivo existente si lo hay
+        if task.archivo:
+            archivo_path = os.path.join(UPLOAD_FOLDER, task.archivo)
+            if os.path.exists(archivo_path):
+                os.remove(archivo_path)
+        # Guardar el nuevo archivo
+        archivo_nombre = archivo.filename
+        archivo.save(os.path.join(UPLOAD_FOLDER, archivo_nombre))
+        task.archivo = archivo_nombre
+
+    db.session.commit()
+    return jsonify({"message": "Task updated"}), 200
 
 @app.route('/uploads/<filename>', methods=['GET'])
 def download_file(filename):
