@@ -123,7 +123,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Task Manager</h1>
+      <h1>Control de Tareas</h1>
       <form onSubmit={taskToEdit ? (e) => { e.preventDefault(); handleUpdate(taskToEdit.id); } : handleSubmit}>
         <input
           type="text"
