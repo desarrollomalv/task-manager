@@ -23,9 +23,40 @@ form {
   margin-bottom: 20px;
 }
 
-form input, form button {
+form input, form select, form textarea, form button {
   padding: 10px;
   font-size: 16px;
+}
+
+form textarea {
+  resize: none; /* Eliminar la esquina estirable */
+}
+
+form select[name="prioridad"] {
+  width: auto; /* Ajustar el ancho del campo "Prioridad" */
+}
+
+form input[type="file"]::file-selector-button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+form input[type="file"] {
+  display: none; /* Ocultar el texto "sin archivos seleccionados" */
+}
+
+form label[for="archivo"] {
+  display: inline-block;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4c77af;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
 form button {
@@ -86,4 +117,31 @@ form button:hover {
 
 .task-card a:hover {
   text-decoration: underline;
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px; /* Ajusta el espacio entre los botones */
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Ajusta el espacio entre los elementos */
+}
+
+form input, form select, form textarea, form button {
+  flex: 1 1 auto; /* Permite que los elementos se ajusten en la línea */
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  font-size: 14px;
+  margin: 0;
 }
