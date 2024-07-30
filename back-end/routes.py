@@ -20,8 +20,9 @@ def manage_tasks():
             responsable=data['responsable'],
             accion_recomendada=data['accion_recomendada'],
             estado_actual=data['estado_actual'],
-            prioridad=data['prioridad'],  # Agregado
-            archivo=archivo_nombre
+            prioridad=data.get('prioridad'),
+            archivo=archivo_nombre,
+            observaciones=data.get('observaciones')  # Nuevo campo
         )
         db.session.add(new_task)
         db.session.commit()
@@ -34,8 +35,9 @@ def manage_tasks():
         'responsable': task.responsable,
         'accion_recomendada': task.accion_recomendada,
         'estado_actual': task.estado_actual,
-        'prioridad': task.prioridad,  # Agregado
-        'archivo': task.archivo
+        'prioridad': task.prioridad,
+        'archivo': task.archivo,
+        'observaciones': task.observaciones  # Nuevo campo
     } for task in tasks])
 
 @app.route('/tasks/<int:id>', methods=['DELETE'])
@@ -70,6 +72,8 @@ def update_task(id):
         task.estado_actual = data['estado_actual']
     if 'prioridad' in data:
         task.prioridad = data['prioridad']
+    if 'observaciones' in data:
+        task.observaciones = data['observaciones']  # Actualizar observaciones
     if archivo:
         # Eliminar archivo existente si lo hay
         if task.archivo:
