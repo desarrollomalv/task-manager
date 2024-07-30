@@ -2,6 +2,7 @@ import os
 from flask import Flask, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_migrate import Migrate  # Importa Migrate
 
 # Crear una instancia de la aplicación Flask
 app = Flask(__name__)
@@ -14,6 +15,9 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limitar el tamaño del ar
 
 # Inicializar SQLAlchemy
 db = SQLAlchemy(app)
+
+# Inicializar Migrate
+migrate = Migrate(app, db)
 
 # Habilitar CORS
 CORS(app)

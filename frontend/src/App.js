@@ -9,6 +9,7 @@ function App() {
     responsable: '',
     accion_recomendada: '',
     estado_actual: '',
+    prioridad: '',  // Nuevo campo
     archivo: null
   });
 
@@ -37,6 +38,7 @@ function App() {
     formData.append('responsable', newTask.responsable);
     formData.append('accion_recomendada', newTask.accion_recomendada);
     formData.append('estado_actual', newTask.estado_actual);
+    formData.append('prioridad', newTask.prioridad);  // Nuevo campo
     if (newTask.archivo) {
       formData.append('archivo', newTask.archivo);
     }
@@ -57,6 +59,7 @@ function App() {
           responsable: '',
           accion_recomendada: '',
           estado_actual: '',
+          prioridad: '',  // Reiniciar el campo
           archivo: null
         });
       })
@@ -80,6 +83,12 @@ function App() {
         <input type="text" name="responsable" placeholder="Responsable" value={newTask.responsable} onChange={handleChange} />
         <input type="text" name="accion_recomendada" placeholder="Acción Recomendada" value={newTask.accion_recomendada} onChange={handleChange} />
         <input type="text" name="estado_actual" placeholder="Estado Actual" value={newTask.estado_actual} onChange={handleChange} />
+        <select name="prioridad" value={newTask.prioridad} onChange={handleChange} required>
+          <option value="">Selecciona Prioridad</option>
+          <option value="Alta">Alta</option>
+          <option value="Media">Media</option>
+          <option value="Baja">Baja</option>
+        </select>
         <input type="file" name="archivo" placeholder="Archivo" onChange={handleChange} />
         <button type="submit">Agregar Tarea</button>
       </form>
@@ -90,6 +99,7 @@ function App() {
             <p><strong>Responsable:</strong> {task.responsable}</p>
             <p><strong>Acción Recomendada:</strong> {task.accion_recomendada}</p>
             <p><strong>Estado Actual:</strong> {task.estado_actual}</p>
+            <p><strong>Prioridad:</strong> {task.prioridad}</p>  {/* Mostrar prioridad */}
             {task.archivo && (
               <p><a href={`${backendUrl}/uploads/${task.archivo}`} download>Descargar archivo</a></p>
             )}
@@ -102,4 +112,3 @@ function App() {
 }
 
 export default App;
-  
