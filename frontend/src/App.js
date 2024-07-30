@@ -8,8 +8,10 @@ function App() {
     tarea: '',
     responsable: '',
     accion_recomendada: '',
-    estado_actual: '',
-    archivo: null
+    estado_actual: 'Pendiente',
+    prioridad: 'Media',
+    archivo: null,
+    observacion: '' // Nuevo campo para observación
   });
 
   const backendUrl = 'https://task-manager-2avl.onrender.com';
@@ -37,6 +39,8 @@ function App() {
     formData.append('responsable', newTask.responsable);
     formData.append('accion_recomendada', newTask.accion_recomendada);
     formData.append('estado_actual', newTask.estado_actual);
+    formData.append('prioridad', newTask.prioridad);
+    formData.append('observacion', newTask.observacion);
     if (newTask.archivo) {
       formData.append('archivo', newTask.archivo);
     }
@@ -56,20 +60,44 @@ function App() {
           tarea: '',
           responsable: '',
           accion_recomendada: '',
-          estado_actual: '',
-          archivo: null
+          estado_actual: 'Pendiente',
+          prioridad: 'Media',
+          archivo: null,
+          observacion: ''
         });
       })
       .catch(error => console.error('Error adding task:', error));
   };
 
   const handleDelete = (id) => {
-    console.log('Deleting task with ID:', id);
     axios.delete(`${backendUrl}/tasks/${id}`)
       .then(response => {
         setTasks(tasks.filter(task => task.id !== id));
       })
       .catch(error => console.error('Error deleting task:', error));
+  };
+
+  const handleUpdate = (id, updatedTask) => {
+    const formData = new FormData();
+    formData.append('tarea', updatedTask.tarea);
+    formData.append('responsable', updatedTask.responsable);
+    formData.append('accion_recomendada', updatedTask.accion_recomendada);
+    formData.append('estado_actual', updatedTask.estado_actual);
+    formData.append('prioridad', updatedTask.prioridad);
+    formData.append('observacion', updatedTask.observacion);
+    if (updatedTask.archivo) {
+      formData.append('archivo', updatedTask.archivo);
+    }
+
+    axios.put(`${backendUrl}/tasks/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+      .then(response => {
+        setTasks(tasks.map(task => task.id === id ? { ...task, ...updatedTask } : task));
+      })
+      .catch(error => console.error('Error updating task:', error));
   };
 
   return (
@@ -79,10 +107,24 @@ function App() {
         <input type="text" name="tarea" placeholder="Tarea" value={newTask.tarea} onChange={handleChange} />
         <input type="text" name="responsable" placeholder="Responsable" value={newTask.responsable} onChange={handleChange} />
         <input type="text" name="accion_recomendada" placeholder="Acción Recomendada" value={newTask.accion_recomendada} onChange={handleChange} />
-        <input type="text" name="estado_actual" placeholder="Estado Actual" value={newTask.estado_actual} onChange={handleChange} />
-        <input type="file" name="archivo" placeholder="Archivo" onChange={handleChange} />
+        
+        <select name="estado_actual" value={newTask.estado_actual} onChange={handleChange}>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Completado">Completado</option>
+          <option value="Descartado">Descartado</option>
+        </select>
+
+        <select name="prioridad" value={newTask.prioridad} onChange={handleChange}>
+          <option value="Alta">Alta</option>
+          <option value="Media">Media</option>
+          <option value="Baja">Baja</option>
+        </select>
+
+        <textarea name="observacion" placeholder="Observación" value={newTask.observacion} onChange={handleChange}></textarea>
+        <input type="file" name="archivo" onChange={handleChange} />
         <button type="submit">Agregar Tarea</button>
       </form>
+
       <div className="task-grid">
         {tasks.map(task => (
           <div key={task.id} className="task-card">
@@ -90,10 +132,17 @@ function App() {
             <p><strong>Responsable:</strong> {task.responsable}</p>
             <p><strong>Acción Recomendada:</strong> {task.accion_recomendada}</p>
             <p><strong>Estado Actual:</strong> {task.estado_actual}</p>
+            <p><strong>Prioridad:</strong> {task.prioridad}</p>
+            <p><strong>Observación:</strong> {task.observacion}</p>
             {task.archivo && (
               <p><a href={`${backendUrl}/uploads/${task.archivo}`} download>Descargar archivo</a></p>
             )}
             <button onClick={() => handleDelete(task.id)}>Eliminar</button>
+            {/* Botón para editar la tarea */}
+            <button onClick={() => handleUpdate(task.id, {
+              ...task,
+              estado_actual: 'Completado' // Ejemplo de cómo podrías actualizar el estado
+            })}>Actualizar</button>
           </div>
         ))}
       </div>
@@ -102,4 +151,3 @@ function App() {
 }
 
 export default App;
-  
