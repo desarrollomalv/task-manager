@@ -201,7 +201,13 @@ function App() {
               <p>Estado: {task.estado_actual}</p>
               <p>Prioridad: {task.prioridad}</p>
               <p>Observaciones: {task.observaciones}</p>
-              {task.archivo && <a href={task.archivo} download>{task.archivo.split('/').pop()} {/* Muestra el nombre del archivo */}</a>}
+              
+              {task.archivo && (
+              <a href={`${backendUrl}/uploads/${task.archivo}`} download>
+                Descargar {task.archivo}
+              </a>
+               )}
+
               <div className="task-actions">
                 <button onClick={() => handleEditClick(task)}>Editar</button>
                 <button onClick={() => handleDelete(task.id)}>Eliminar</button>
