@@ -145,3 +145,10 @@ form input, form select, form textarea, form button {
   font-size: 14px;
   margin: 0;
 }
+
+.logo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 20px auto; /* Centrar la imagen horizontalmente */
+}

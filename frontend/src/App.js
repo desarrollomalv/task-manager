@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
+import logo from './UNCPBA.png'; // Ruta a tu imagen
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -131,6 +132,7 @@ function App() {
     <>
       <div className="App">
         <h1>Control de Tareas</h1>
+        <img src={logo} alt="Logo" className="logo" /> {/* Imagen añadida */}
         <form onSubmit={taskToEdit ? (e) => { e.preventDefault(); handleUpdate(taskToEdit.id); } : handleSubmit}>
           <input
             type="text"
