@@ -9,7 +9,9 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  padding-bottom: 60px; /* Espacio suficiente para el footer */
 }
+
 
 h1 {
   text-align: center;
@@ -84,7 +86,10 @@ form button:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  word-wrap: break-word; /* Permite que el texto largo se ajuste */
+  overflow: hidden; /* Evita el desbordamiento */
 }
+
 
 .task-card h3 {
   margin-top: 0;
