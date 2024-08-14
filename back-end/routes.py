@@ -5,7 +5,7 @@ import os
 
 UPLOAD_FOLDER = 'uploads'  # Define tu carpeta de subidas
 
-@app.route('/tasks', methods=['POST'])
+@app.route('/tasks', methods=['GET', 'POST'])
 def manage_tasks():
     data = request.form
     archivos = request.files.getlist('archivo')  # Cambia para manejar múltiples archivos
