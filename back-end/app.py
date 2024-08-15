@@ -2,7 +2,7 @@ import os
 from flask import Flask, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from flask_migrate import Migrate  # Importa Migrate
+from flask_migrate import Migrate
 
 # Crear una instancia de la aplicación Flask
 app = Flask(__name__)

@@ -1,7 +1,7 @@
+import os
 from flask import request, jsonify, send_file
 from app import app, db
 from models import Archivo, Task
-import os
 
 UPLOAD_FOLDER = 'uploads'  # Define tu carpeta de subidas
 
@@ -74,7 +74,6 @@ def update_task(id):
 
     db.session.commit()
     return jsonify({"message": "Task updated"}), 200
-
 
 @app.route('/uploads/<filename>', methods=['GET'])
 def download_file(filename):
