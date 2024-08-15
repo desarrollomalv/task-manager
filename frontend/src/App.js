@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import { checkSession, subscribeAuthChanges, supabase } from './supabaseClient';
 import TaskManager from './TaskManager';
 import Login from './login';
