@@ -54,3 +54,33 @@ def delete_task(id):
         db.session.commit()
         return jsonify({"message": "Task deleted"}), 200
     return jsonify({"message": "Task not found"}), 404
+
+@app.route('/tasks/<int:id>', methods=['PUT'])
+def update_task(id):
+    task = Task.query.get(id)
+    if not task:
+        return jsonify({"message": "Task not found"}), 404
+
+    data = request.form
+    task.tarea = data.get('tarea')
+    task.responsable = data.get('responsable')
+    task.accion_recomendada = data.get('accion_recomendada')
+    task.estado_actual = data.get('estado_actual')
+    task.prioridad = data.get('prioridad')
+    task.observaciones = data.get('observaciones')
+
+    # Manejar el archivo subido si existe
+    if 'archivo' in request.files:
+        file = request.files['archivo']
+        if file.filename != '':
+            # Elimina el archivo anterior si existe
+            if task.archivo:
+                old_file_path = os.path.join(app.config['UPLOAD_FOLDER'], task.archivo)
+                if os.path.exists(old_file_path):
+                    os.remove(old_file_path)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            file.save(file_path)
+            task.archivo = file.filename
+
+    db.session.commit()
+    return jsonify({"message": "Task updated"}), 200
