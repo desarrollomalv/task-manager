@@ -131,19 +131,8 @@ function TaskManager() {
         });
     };
   
-    const downloadFile = (url) => {
-        axios.get(url, { responseType: 'blob' })
-            .then((response) => {
-                const blob = new Blob([response.data], { type: response.headers['content-type'] });
-                const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = url.split('/').pop(); // Nombre del archivo
-                link.click();
-                window.URL.revokeObjectURL(link.href);
-            })
-            .catch((error) => {
-                console.error('Error downloading file:', error);
-            });
+    const getFileDownloadUrl = (fileName) => {
+        return `${backendUrl}/uploads/${fileName}`;
     };
   
     return (
@@ -222,10 +211,26 @@ function TaskManager() {
                             
                             {task.archivo && (
                                 <a
-                                    href="#"
+                                    href={getFileDownloadUrl(task.archivo)}
+                                    download={task.archivo}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        downloadFile(`${backendUrl}/uploads/${task.archivo}`);
+                                        // Forzar descarga automáticamente
+                                        axios.get(getFileDownloadUrl(task.archivo), { responseType: 'blob' })
+                                            .then((response) => {
+                                                const blob = new Blob([response.data], { type: response.headers['content-type'] });
+                                                const url = window.URL.createObjectURL(blob);
+                                                const link = document.createElement('a');
+                                                link.href = url;
+                                                link.download = task.archivo;
+                                                document.body.appendChild(link);
+                                                link.click();
+                                                document.body.removeChild(link);
+                                                window.URL.revokeObjectURL(url);
+                                            })
+                                            .catch((error) => {
+                                                console.error('Error downloading file:', error);
+                                            });
                                     }}
                                 >
                                     Descargar {task.archivo}
