@@ -1,7 +1,6 @@
 # models.py
 
 from app import db
-from sqlalchemy.dialects.postgresql import ARRAY  # Importa ARRAY si estás usando PostgreSQL
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)

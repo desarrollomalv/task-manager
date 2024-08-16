@@ -36,6 +36,7 @@ with app.app_context():
 def hello():
     return "Si estas viendo esto, app.py se esta ejecutando CON LA CONFIGURACION NUEVA PARA LOS ARCHIVOS!"
 
+
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)

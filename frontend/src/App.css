@@ -51,7 +51,7 @@ form input[type="file"] {
   display: none; /* Ocultar el texto "sin archivos seleccionados" */
 }
 
-form label[for="archivos"] {
+form label[for="archivo"] {
   display: inline-block;
   padding: 10px;
   font-size: 16px;
